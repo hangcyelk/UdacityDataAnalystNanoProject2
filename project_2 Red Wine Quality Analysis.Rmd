@@ -52,7 +52,9 @@ ggplot(df, aes(x = fixed.acidity)) +
   ylab("Count")
 
 ```
+
 The Fixed acidity value seems to dispaly a normal distribution. Let's see volatile acidity distribution
+
 ```{r echo = FALSE, Volatile_acidity_distribution}
 plot <- ggplot(df, aes(x = volatile.acidity)) +
   geom_histogram(binwidth = 0.02) +
@@ -121,7 +123,9 @@ ggplot(df, aes(x = residual.sugar)) +
   xlab("Residual Sugar") +
   ylab("Count")
 ```
+
 The histogram is highly skewed to left. 
+
 ```{r echo = FALSE, quality_distribution}
 ggplot(df, aes(x = quality)) +
   geom_histogram(binwidth = 1) +
@@ -130,7 +134,9 @@ ggplot(df, aes(x = quality)) +
   xlab("Quality") +
   ylab("Count")
 ```
+
 Quality is distributed from 3 - 8. Most wine exhibit medium(5 - 6) quality. 
+
 ```{r echo = FALSE, quality.level_distribution}
 ggplot(df, aes(x = quality.level)) +
   geom_bar() +
@@ -138,6 +144,7 @@ ggplot(df, aes(x = quality.level)) +
   xlab("Quality level") +
   ylab("Count")
 ```
+
 Most of the wines fall in the range of 4 to 6 in terms of quality.
 
 
@@ -171,10 +178,11 @@ No
 # Bivariate Plots Section
 
 ```{r, echo=FALSE, fig.width=20, fig.height=20}
-df_num <-df[,c(1:12)]
-res <- cor(df_num)
+names <- c('citric.acid', 'sulphates', 'fixed.acidity','volatile.acidity','residual.sugar','chlorides','free.sulfur.dioxide','total.sulfur.dioxide','density','pH','alcohol','quality')
+res <- cor(df[names])
 corrplot(res, type = "upper", order = "hclust", 
          tl.col = "black", tl.srt = 45)
+
 ```
 From the correlation matrix, the following behaviors are observed:
 
@@ -192,48 +200,8 @@ with volatile acidity.
 Also from above scatterplot matrix, chlorides and sulphates doesn't seem to have
 any kind of effect to quality.
 
-Let's now dig deeper into the correlation between quality and other features:
-
-```{r echo = FALSE, alcohol_quality}
-ggplot(df, aes(x = alcohol)) +
-  geom_density(aes(fill = "red", color = "red")) +
-  facet_wrap(~quality) +
-  theme(legend.position = "none") +
-  ggtitle("Alcohol VS Quality") +
-  xlab("Alcohol") +
-  ylab("Quality")
-```
-
-There seems to be no significant bias of the alcohol content. With some exceptions that some samples with higer Alcohol content exhibiting a higher density 
-reading for the quality levels equaling to 3 and 5.
-
-Negative correlation of volatile acidity and quality are summarized below:
-```{r echo = FALSE, quality_volatileAcidity}
-ggplot(df, aes(x = volatile.acidity)) +
-  geom_density(aes(fill = "red", color = "red")) +
-  facet_wrap(~quality) +
-  theme(legend.position = "none") +
-  ggtitle("Volatile Acidity VS Quality") +
-  xlab("Volatile Acidity") +
-  ylab("Quality")
-```
-It seems that wine with higher volatile acidity exhibiting higher density for
-quality levels 5,7 and 8.
-
-Lets find out the relation between residual sugar and quality.
-```{r echo = FALSE, ResidualSugar_VS_Quality}
-ggplot(df, aes(x = residual.sugar)) +
-  geom_density(aes(fill = "red", color = "red")) +
-  facet_wrap(~quality) +
-  theme(legend.position = "none") +
-  ggtitle("Residual Sugar VS Quality") +
-  xlab("Residual Sugar") +
-  ylab("Quality")
-
-```
-Quality rating shows higher density of residual sugar (while quailty=3 is little lower). But no significant pattern is observed, thus sugar wouldn't be helpful to predict quality.
-
 Let's have some box plots with quality level to observe the outliers.
+
 ```{r echo = FALSE, quality.cut_VS_pH}
 ggplot(df, aes(x = quality.level, y = pH)) +
   geom_boxplot() +
@@ -241,6 +209,7 @@ ggplot(df, aes(x = quality.level, y = pH)) +
   xlab("Quality Level") +
   ylab("pH")
 ```
+
 For PH, most of the outliers seem to lie in quality range (4,6].
 
 ```{r echo = FALSE, quality.level_VS_alcohol}
@@ -250,6 +219,7 @@ ggplot(df, aes(x = quality.level, y = alcohol)) +
   xlab("Quality Level") +
   ylab("Alcohol")
 ```
+
 For aclcohol, most of the outliers also seem to lie in quality range (4,6].
 
 ```{r echo = FALSE, quality.level_VS_citricAcid}
@@ -259,7 +229,9 @@ ggplot(df, aes(x = quality.level, y = citric.acid)) +
   xlab("Quality level") +
   ylab("Citric Acid")
 ```
+
 Only a few outliers are obersrved for citric acid.
+
 ```{r echo = FALSE, quality.level_VS_Free_SO2}
 ggplot(df, aes(x = quality.level, y = free.sulfur.dioxide)) +
   geom_boxplot() +
@@ -267,6 +239,7 @@ ggplot(df, aes(x = quality.level, y = free.sulfur.dioxide)) +
   xlab("Quality level") +
   ylab("Free SO2")
 ```
+
 For SO2, it contains outliers in all the quality level range.
 
 # Bivariate Analysis
@@ -292,6 +265,51 @@ other features. Also, most of the outliers are in the quality range (4,6] and th
     + Volatile acidity and Citric Acid
 
 # Multivariate Plots Section
+
+Let's now dig deeper into the correlation between quality and other features:
+
+```{r echo = FALSE, alcohol_quality}
+ggplot(df, aes(x = alcohol)) +
+  geom_density(aes(fill = "red", color = "red")) +
+  facet_wrap(~quality) +
+  theme(legend.position = "none") +
+  ggtitle("Alcohol VS Quality") +
+  xlab("Alcohol") +
+  ylab("Quality")
+```
+
+There seems to be no significant bias of the alcohol content. With some exceptions that some samples with higer Alcohol content exhibiting a higher density 
+reading for the quality levels equaling to 3 and 5.
+
+Negative correlation of volatile acidity and quality are summarized below:
+
+```{r echo = FALSE, quality_volatileAcidity}
+ggplot(df, aes(x = volatile.acidity)) +
+  geom_density(aes(fill = "red", color = "red")) +
+  facet_wrap(~quality) +
+  theme(legend.position = "none") +
+  ggtitle("Volatile Acidity VS Quality") +
+  xlab("Volatile Acidity") +
+  ylab("Quality")
+```
+
+It seems that wine with higher volatile acidity exhibiting higher density for
+quality levels 5,7 and 8.
+
+Lets find out the relation between residual sugar and quality.
+
+```{r echo = FALSE, ResidualSugar_VS_Quality}
+ggplot(df, aes(x = residual.sugar)) +
+  geom_density(aes(fill = "red", color = "red")) +
+  facet_wrap(~quality) +
+  theme(legend.position = "none") +
+  ggtitle("Residual Sugar VS Quality") +
+  xlab("Residual Sugar") +
+  ylab("Quality")
+
+```
+
+Quality rating shows higher density of residual sugar (while quailty=3 is little lower). But no significant pattern is observed, thus sugar wouldn't be helpful to predict quality.
 
 ```{r echo = FALSE, warning = FALSE,Alcohol_VS_Citric_Acid_VS_QualityLevel}
 ggplot(df, aes(x = alcohol, y = citric.acid , color = quality.level)) +
@@ -325,6 +343,7 @@ ggplot(df, aes(x = density, y = alcohol, color = as.factor(quality))) +
   xlab("Density") +
   labs(color = "Quality")
 ```
+
 Negative correlation is observed here. Most of wine samples with quality 5 seems to
 be distributed with alcohol content less 11% by volume, while samples with
 quality 7 above 11% alcohol by volume.
@@ -351,7 +370,7 @@ ggplot(df, aes(x = residual.sugar)) +
   facet_wrap(~quality) +
   theme(legend.position = "none") +
   ggtitle("Plot_One Residual Sugar VS Quality") +
-  xlab("Residual Sugar") +
+  xlab("Residual Sugar [g/dm^3]") +
   ylab("Quality")
 ```
 
@@ -369,8 +388,8 @@ ggplot(df, aes(x = alcohol, y = citric.acid , color = quality.level)) +
   scale_color_brewer(palette = "Blues") +
   theme_dark() +
   ggtitle("Plot_Two Alcohol vs Citric Acid") +
-  xlab("Alcohol") +
-  ylab("Citric Acid")
+  xlab("Alcohol [% by volume]") +
+  ylab("Citric Acid [g/dm^3]")
 ```
 
 ### Description Two
@@ -383,8 +402,8 @@ ggplot(df, aes(x = density, y = alcohol, color = as.factor(quality))) +
   coord_cartesian(xlim=c(min(df$density),1.005), ylim=c(8,15)) +
   scale_color_brewer(type='qual') +
   ggtitle('Plot_Three Density vs. Alcohol correlation by Quality') +
-  ylab("Alcohol (% by volume)") +
-  xlab("Density (g / cm^3)") +
+  ylab("Alcohol [% by volume]") +
+  xlab("Density [g/dm^3]") +
   labs(color = "Quality")
 
 ```
